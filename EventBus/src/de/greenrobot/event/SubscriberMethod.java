@@ -21,13 +21,16 @@ final class SubscriberMethod {
     final Method method;
     final ThreadMode threadMode;
     final Class<?> eventType;
+    final BackgroundPoster backgroundPoster;
+
     /** Used for efficient comparison */
     String methodString;
 
-    SubscriberMethod(Method method, ThreadMode threadMode, Class<?> eventType) {
+    SubscriberMethod(Method method, ThreadMode threadMode, Class<?> eventType, BackgroundPoster backgroundPoster) {
         this.method = method;
         this.threadMode = threadMode;
         this.eventType = eventType;
+        this.backgroundPoster = backgroundPoster;
     }
 
     @Override
@@ -50,6 +53,9 @@ final class SubscriberMethod {
             builder.append(method.getDeclaringClass().getName());
             builder.append('#').append(method.getName());
             builder.append('(').append(eventType.getName());
+            if (backgroundPoster != null) {
+                builder.append('@').append(backgroundPoster.getName());
+            }
             methodString = builder.toString();
         }
     }

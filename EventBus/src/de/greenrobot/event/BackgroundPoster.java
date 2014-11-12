@@ -17,6 +17,8 @@ package de.greenrobot.event;
 
 import android.util.Log;
 
+import java.util.concurrent.ExecutorService;
+
 /**
  * Posts events in background.
  * 
@@ -26,12 +28,22 @@ final class BackgroundPoster implements Runnable {
 
     private final PendingPostQueue queue;
     private final EventBus eventBus;
+    private final ExecutorService executorService;
+    private final String name;
 
     private volatile boolean executorRunning;
 
+
     BackgroundPoster(EventBus eventBus) {
+        this(eventBus, eventBus.getExecutorService(), "EventBusBackgroundThread");
+    }
+
+    BackgroundPoster(EventBus eventBus, ExecutorService executorService, String name) {
         this.eventBus = eventBus;
+        this.executorService = executorService;
+        this.name = name;
         queue = new PendingPostQueue();
+
     }
 
     public void enqueue(Subscription subscription, Object event) {
@@ -40,7 +52,7 @@ final class BackgroundPoster implements Runnable {
             queue.enqueue(pendingPost);
             if (!executorRunning) {
                 executorRunning = true;
-                eventBus.getExecutorService().execute(this);
+                executorService.execute(this);
             }
         }
     }
@@ -71,4 +83,7 @@ final class BackgroundPoster implements Runnable {
         }
     }
 
+    public String getName() {
+        return name;
+    }
 }
