@@ -108,7 +108,6 @@ public class EventBus {
         typesBySubscriber = new HashMap<Object, List<Class<?>>>();
         stickyEvents = new ConcurrentHashMap<Class<?>, Object>();
         mainThreadPoster = new HandlerPoster(this, Looper.getMainLooper(), 10);
-        backgroundPoster = new BackgroundPoster(this);
         asyncPoster = new AsyncPoster(this);
         subscriberMethodFinder = new SubscriberMethodFinder(builder.skipMethodVerificationForClasses);
         logSubscriberExceptions = builder.logSubscriberExceptions;
@@ -118,6 +117,7 @@ public class EventBus {
         throwSubscriberException = builder.throwSubscriberException;
         eventInheritance = builder.eventInheritance;
         executorService = builder.executorService;
+        backgroundPoster = new BackgroundPoster(this, executorService, "EventBusBackgroundThread");
         backgroundPosterProvider = new BackgroundPosterProviderImpl(this);
     }
 
@@ -128,6 +128,14 @@ public class EventBus {
      **/
     public void registerExecutor(String name, ExecutorService executorService) {
         backgroundPosterProvider.register(name, executorService);
+    }
+
+    public void unregisterExecutor(String name) {
+        backgroundPosterProvider.unregister(name);
+    }
+
+    public void executorIsRegistered(String name) {
+        backgroundPosterProvider.posterExists(name);
     }
 
     /**

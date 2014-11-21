@@ -26,6 +26,14 @@ public class BackgroundPosterProviderImpl implements BackgroundPosterProvider {
     }
 
     @Override
+    public void unregister(String name) throws EventBusException {
+        if (!backgroundPosterMap.containsKey(name)) {
+            throw new EventBusException("Executor with name " + name + " is not registered");
+        }
+        backgroundPosterMap.remove(name);
+    }
+
+    @Override
     public boolean posterExists(String name) {
         return backgroundPosterMap.containsKey(name);
     }

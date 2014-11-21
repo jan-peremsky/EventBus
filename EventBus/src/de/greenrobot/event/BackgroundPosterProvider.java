@@ -8,6 +8,8 @@ import java.util.concurrent.ExecutorService;
 public interface BackgroundPosterProvider {
     void register(String name, ExecutorService service) throws EventBusException;
 
+    void unregister(String name) throws EventBusException;
+
     boolean posterExists(String name);
 
     BackgroundPoster getPoster(String name);

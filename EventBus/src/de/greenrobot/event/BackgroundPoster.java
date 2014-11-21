@@ -33,11 +33,6 @@ final class BackgroundPoster implements Runnable {
 
     private volatile boolean executorRunning;
 
-
-    BackgroundPoster(EventBus eventBus) {
-        this(eventBus, eventBus.getExecutorService(), "EventBusBackgroundThread");
-    }
-
     BackgroundPoster(EventBus eventBus, ExecutorService executorService, String name) {
         this.eventBus = eventBus;
         this.executorService = executorService;
